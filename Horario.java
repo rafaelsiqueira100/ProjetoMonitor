@@ -1,3 +1,5 @@
+package teste1;
+
 import java.sql.Time;
 public class Horario implements Comparable<Horario>{
 
@@ -68,10 +70,9 @@ public class Horario implements Comparable<Horario>{
 	        }
 	        //toString
 			public String toString(){
-
-			return this.intervalo.toString();
-
+				return this.intervalo.toString();
 			}
+
 
 	        public int hashCode()
 	        {

@@ -1,35 +1,54 @@
+package teste1;
+
 import java.util.ArrayList;
 import java.sql.Time;
 public class ConversorJSON{
-	public static ArrayList<IntervaloHorario> converteParaHorario(String json){
+    private static String base;
+    private static int i;
+    private static char atual;
+    public static ArrayList<IntervaloHorario> converteParaHorario(String json){
 		if(json == null ||json.equals(""))
 			return null;
 		ArrayList<IntervaloHorario> retorno = new ArrayList();
 		IntervaloHorario atual;
-		char charAtual= 0;
-		int indAtual = 0;
-		while(charAtual != ']'){
-			consumirAte('{', indAtual, json);
+		ConversorJSON.atual= 0;
+		ConversorJSON.i = 0;
+		ConversorJSON.base = json;
+		boolean continuar = true;
+		while(continuar){
+			consumirAte('{');
 			atual = new IntervaloHorario();
-			atual.setHorarioFim(proximoHorario(indAtual, json));
-			atual.setHorarioInicio(proximoHorario(indAtual, json));
-			consumirAte('}', indAtual, json);
+			atual.setHorarioFim(proximoHorario());
+			atual.setHorarioInicio(proximoHorario());
+			consumirAte('}');
 			retorno.add(atual);
+			continuar = consumirAte(',',']');
 		}//acabou leitura
 		return retorno;
 	}
-	private static void consome(char atual, int i, String base){
-		atual = base.charAt(i);
+	private static void consome(){
+		
 		i++;
+		atual = base.charAt(i);
 	}
-	private static void consumirAte(char carEsperado, int i, String base){
-		char atual = base.charAt(i);
+	private static void consumirAte(char carEsperado){
+		atual = base.charAt(i);
 		while(atual != carEsperado){
-			consome(atual, i, base);
+			consome();
 		}
 		i ++;//consome carEsperado
 	}
-	private static int proximoInt(int i, String base){
+	private static boolean consumirAte(char carEsperado1, char carEsperado2){
+		atual = base.charAt(i);
+		while(atual != carEsperado1 && atual != carEsperado2){
+			consome();
+		}
+		i ++;//consome carEsperado
+		return atual == carEsperado1;
+		
+		
+	}
+	private static int proximoInt(){
 		char[] paraConverter = {base.charAt(i), base.charAt(i+1)};
 		int retorno = Integer.parseInt(
 		new String(paraConverter)
@@ -37,16 +56,20 @@ public class ConversorJSON{
 		i +=2;
 		return retorno;
 	}
-	private static Time proximoHorario(int i, String base){
+	private static Time proximoHorario(){
 		int hora, min, seg;
-		consumirAte(':', i, base);
-		consumirAte('"', i, base);
-		hora = proximoInt(i, base);
-		consumirAte(':', i, base);
-		min = proximoInt(i, base);
-		consumirAte(':', i, base);
-		seg = proximoInt(i, base);
-		consumirAte('"', i, base);
-		return new Time(hora, min, seg);
+		consumirAte(':');
+		consumirAte('"');
+		hora = proximoInt();
+		consumirAte(':');
+		min = proximoInt();
+		consumirAte(':');
+		seg = proximoInt();
+		consumirAte('"');
+		long paraMilis = (hora+3)*60 + min;
+		paraMilis*=60;
+		paraMilis +=seg;
+		paraMilis*=1000;
+		return new Time(paraMilis);
 	}
 }

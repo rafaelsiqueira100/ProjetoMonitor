@@ -1,3 +1,5 @@
+package teste1;
+
 import java.sql.Time;
 public class IntervaloHorario implements Comparable<IntervaloHorario>{
  		private Time horarioInicio;
@@ -5,7 +7,8 @@ public class IntervaloHorario implements Comparable<IntervaloHorario>{
         public Time getHorarioFim() { return horarioFim; }
         public void setHorarioFim (Time value){
                 if (haMonitoria(value))
-                    if (value.compareTo(this.horarioInicio) > 0)
+                	
+                    if (this.horarioInicio == null || value.compareTo(this.horarioInicio) > 0)
                         this.horarioFim = value;
                     else
                         throw new IllegalArgumentException("Intervalo de Horário: horário de início é maior que o de fim!");
@@ -76,7 +79,7 @@ public class IntervaloHorario implements Comparable<IntervaloHorario>{
             return hashCode;
         }
         public String toString(){
-			return this.horarioInicio.toString() + " - "+ this.horarioFim.toString();
+        	return this.horarioInicio.toString() + " - "+ this.horarioFim.toString();
 		}
 
 }

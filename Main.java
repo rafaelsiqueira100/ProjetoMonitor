@@ -1,9 +1,11 @@
+package teste1;
+
 import java.sql.Time;
 import java.util.ArrayList;
 import java.io.*;
 public class Main{
 	public static void main(String[] args){
-		/*try{
+		//try{
 			/*BufferedReader teclado = new BufferedReader(new InputStreamReader(System.in));
 			IntervaloHorario ih1 = new IntervaloHorario
 			(new Time(7,30,0), new Time(8,20,0));
