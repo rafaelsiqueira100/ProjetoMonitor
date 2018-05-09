@@ -1,4 +1,4 @@
-
+﻿
 const express = require('express');
 const app = express();         
 const bodyParser = require('body-parser');
@@ -29,10 +29,7 @@ router.get('/', (req, res) => res.json({ message: 'Funcionando!' }));
 app.use('/', router);
 
 var Request = require('tedious').Request;
-
-  
-
-router.get('/GetHorarios/:ds?&cod?', (req, res) =>{
+router.get('/GetHorarios/:ds&:cod', (req, res) =>{
     if(req.params.ds && req.params.cod)
      var sql = "selectHorarios_sp";
     request = new Request(sql, function(err, rowCount) {
@@ -43,19 +40,17 @@ router.get('/GetHorarios/:ds?&cod?', (req, res) =>{
       }
     });
     var data = [];
+    request.addParameter('diaSemana', TYPES.Int, parseInt(req.params.ds));
+    request.addParameter('codMonitor', TYPES.Int, parseInt(req.params.cod));
+    connection.callProcedure(request);
     request.on('row', function(columns) {
       data.push({
           horarioFim: columns[0],
           horarioInicio: columns[1]
       })
-        
+        console.log(data);
     });
-    request.addParameter('diaSemana', TYPES.Int, ds);
-    request.addParameter('codMonitor', TYPES.Int, cod);
-    connection.callProcedure(request);
     res.json(data);
-    
-    
 })
 
     app.listen(port);
