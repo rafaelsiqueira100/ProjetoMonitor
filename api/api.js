@@ -2,7 +2,7 @@
 const express = require('express');
 const app = express();         
 const bodyParser = require('body-parser');
-const port = 52189; //porta padrão
+const port = 50169; //porta padrão
 const sql = require('tedious');
 //const connStr = "Server=Regulus;Database=BD16189;User Id=16189;Password=professorageraldina;";
 var Connection = require('tedious').Connection;
@@ -30,27 +30,35 @@ app.use('/', router);
 
 var Request = require('tedious').Request;
 router.get('/GetHorarios/:ds&:cod', (req, res) =>{
-    if(req.params.ds && req.params.cod)
-     var sql = "selectHorarios_sp";
+    console.log(req.params.ds)  ; 
+    console.log(req.params.cod)  ; 
+    if(req.params.ds && req.params.cod){
+        var sql = 'selectHorario_sp';
     request = new Request(sql, function(err, rowCount) {
       if (err) {
         console.log(err);
       } else {
         console.log(rowCount + ' rows');
       }
+         
     });
-    var data = [];
-    request.addParameter('diaSemana', TYPES.Int, parseInt(req.params.ds));
-    request.addParameter('codMonitor', TYPES.Int, parseInt(req.params.cod));
-    connection.callProcedure(request);
-    request.on('row', function(columns) {
+        request.on('row', function(columns) {
       data.push({
-          horarioFim: columns[0],
-          horarioInicio: columns[1]
+          'horarioInicio': columns[0],
+          'horarioFim': columns[1]
       })
-        console.log(data);
-    });
+        console.log("1: "+data);
+    })
+    var data = [];
+    console.log(req.params.ds)  ; 
+    console.log(req.params.cod)  ; 
+    console.log("2: "+data);
+    request.addParameter('diaSemana', TYPES.Int, req.params.ds);
+    request.addParameter('codMonitor', TYPES.Int, req.params.cod);
+    connection.callProcedure(request);
+    console.log("3:"+data);
     res.json(data);
+    }
 })
 
     app.listen(port);
