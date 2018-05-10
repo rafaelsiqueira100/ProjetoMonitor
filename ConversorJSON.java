@@ -1,4 +1,3 @@
-package teste1;
 
 import java.util.ArrayList;
 import java.sql.Time;
@@ -16,7 +15,11 @@ public class ConversorJSON{
 		ConversorJSON.base = json;
 		boolean continuar = true;
 		while(continuar){
-			consumirAte('{');
+            try{
+                consumirAte('{');}
+			catch(IndexOutOfBoundsException ex){//quando o indice passa do tamanho da String
+                return retorno;
+			}
 			atual = new IntervaloHorario();
 			atual.setHorarioFim(proximoHorario());
 			atual.setHorarioInicio(proximoHorario());
@@ -27,15 +30,18 @@ public class ConversorJSON{
 		return retorno;
 	}
 	private static void consome(){
-		
+
 		i++;
 		atual = base.charAt(i);
 	}
-	private static void consumirAte(char carEsperado){
+	private static void consumirAte(char carEsperado)throws IndexOutOfBoundsException{
 		atual = base.charAt(i);
-		while(atual != carEsperado){
+		while(atual != carEsperado && i < base.length()){
 			consome();
 		}
+		if(i >= base.length())//há casos em que o json retorna []
+            throw new IndexOutOfBoundsException(" i >= json.size()");
+
 		i ++;//consome carEsperado
 	}
 	private static boolean consumirAte(char carEsperado1, char carEsperado2){
@@ -45,8 +51,8 @@ public class ConversorJSON{
 		}
 		i ++;//consome carEsperado
 		return atual == carEsperado1;
-		
-		
+
+
 	}
 	private static int proximoInt(){
 		char[] paraConverter = {base.charAt(i), base.charAt(i+1)};
